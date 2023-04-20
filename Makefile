@@ -4,10 +4,10 @@ TMPRUN =
 PACKAGE = ontogpt
 TEMPLATE_DIR = src/$(PACKAGE)/templates
 EVAL_DIR = src/$(PACKAGE)/evaluation
-TEMPLATES = core gocam mendelian_disease biological_process treatment environmental_sample metagenome_study reaction recipe ontology_class metabolic_process drug ctd halo gene_description_term
+TEMPLATES = core gocam mendelian_disease biological_process treatment environmental_sample metagenome_study reaction recipe ontology_class metabolic_process drug ctd halo gene_description_term grantDistillOS_Schema
 ENTRY_CLASSES = recipe.Recipe gocam.GoCamAnnotations reaction.ReactionDocument ctd.ChemicalToDiseaseDocument
 
-all: all_pydantic all_projects update_citation
+all: all_pydantic all_projects 
 
 all_pydantic: $(patsubst %, $(TEMPLATE_DIR)/%.py, $(TEMPLATES))
 all_projects: $(patsubst %, projects/%, $(TEMPLATES))
@@ -21,10 +21,10 @@ unit-test:
 integration-test:
 	$(RUN) python -m unittest
 
-
-update_citation: CITATION.cff
-	V=$$($(RUN) python -c "import ontogpt;print('.'.join((ontogpt.__version__).split('.', 3)[:3]))") ; \
-	sed -i '/^version:/c\version: '"$$V"'' $<
+# this doesn't actually work, so I'm commeting it out
+#update_citation: CITATION.cff
+#	V=$$($(RUN) python -c "import ontogpt;print('.'.join((ontogpt.__version__).split('.', 3)[:3]))") ; \
+#	sed -i '/^version:/c\version: '"$$V"'' $<
 
 $(TEMPLATE_DIR)/%.py: src/$(PACKAGE)/templates/%.yaml
 	$(RUN) gen-pydantic $< > $@.tmp && mv $@.tmp $@
